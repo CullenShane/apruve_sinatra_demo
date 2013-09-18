@@ -1,0 +1,204 @@
+get '/' do
+  @payment_request = Apruve::PaymentRequest.new api_key: "f8ecae057491ddfbd900bf5fa3d60271", merchant_id: 'cdfb6b7a34d4d242d9596c0a7c8d8498', amount: 1150, currency: 'USD'
+  @payment_request.line_items << Apruve::LineItem.new(description: 'Description "for" a widget', title: 'A Widget', sku: "SKU-ABCD", price_total: 1000, quantity: 1)
+  @payment_request.line_items << Apruve::LineItem.new(title: 'Another Widget', description: 'Description for another widget', sku: "SKU-EFGH", price_total: 150, quantity: 1)
+
+  erb :index
+end
+
+<div id="thankYou" style="display:none">
+  <div class="row">
+    <div class="span6 offset3">
+      <div class="well-large" style="text-align: center">
+        <h1>Your order is ready to place. Click to complete.</h1>
+
+        <table class="table">
+          <tr>
+            <td><strong>Order</strong></td>
+            <td><strong>Ready To Place</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Payment Request Status</strong></td>
+            <td><strong>
+              <div id="paymentRequestStatus"></div>
+            </strong></td>
+          </tr>
+          <tr>
+            <td><strong>Token</strong></td>
+            <td><strong>
+              <div id="paymentRequestToken"></div>
+            </strong></td>
+          </tr>
+        </table>
+        <form action="/finish_order" method="POST">
+          <input id="tokenField" type="hidden" name="token" value="">
+          <input type="submit" value="Submit">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="shoppingCart">
+  <div class="row">
+    <div class="span12">
+      <div class="well-large">
+        <table class="table">
+          <thead>
+          <tr>
+            <td>Title</td>
+            <td>Description</td>
+            <td>SKU</td>
+            <td>Price</td>
+          </tr>
+          </thead>
+          <tr>
+            <td>A Widget</td>
+            <td>Description for a widget</td>
+            <td>SKU-ABCD</td>
+            <td>$10.00</td>
+          </tr>
+          <tr>
+            <td>Another Widget</td>
+            <td>Description for another widget</td>
+            <td>SKU-EFGH</td>
+            <td>$1.50</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span5 offset7">
+      <div class="well-large">
+
+        <table class="table">
+          <tr>
+            <td><strong>Total</strong></td>
+            <td><strong>$11.50</strong></td>
+          </tr>
+          <tr>
+            <td>
+              <p><strong>Click to pay</strong></p>
+            </td>
+            <td>
+              <p><img src="img/credit-card-logos-sm.png"/></p>
+
+              <p><input id="apruveBtn" type="submit" value="" class="apruveBtn" style="width: 67px;height: 21px;"/></p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="test.apruve.com/js/apruve.js" type="text/javascript"></script>
+
+
+
+<script type="text/javascript">
+    apruve.logoSrc = '/img/generic-logo.png';
+    apruve.secureHash = '<%= @payment_request.token %>';
+    apruve.paymentRequest = <%= @payment_request.to_json %>;
+    apruve.registerApruveCallback(apruve.APRUVE_COMPLETE_EVENT, function () {
+        $('#paymentRequestStatus').html(apruve.status)
+        $('#paymentRequestToken').html(apruve.paymentRequestToken)
+        $('#tokenField').val(apruve.paymentRequestToken)
+        $('#shoppingCart').hide()
+        $('#thankYou').show()
+    });
+</script>
+
+
+
+<div id="apruveBtn" type="submit" value="" class="apruveBtn" style="width: 67px;height: 21px;"/>
+
+
+<div id="thankYou">
+  <div class="row">
+    <div class="span8 offset2">
+      <% if @paymentStatus == "captured" %>
+          <h1>Thank you for your order!</h1>
+
+          <h3>Payment has been made. We'll ship that right out.</h3>
+      <% elsif @paymentStatus == "pending" %>
+          <h1>Thank you for your order!</h1>
+
+          <h3>Your order will be shipped as soon as final payment is approved.</h3>
+      <% elsif @paymentStatus == "rejected" %>
+          <h1>Payment for your order has been rejected.</h1>
+
+          <h3>Please select another payment method.</h3>
+      <% else %>
+          <h1>An unexpected response was received.</h1>
+      <% end %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span6 offset3">
+      <div class="well-large" style="text-align: center">
+
+        <table class="table">
+          <tr>
+            <td><strong>Order</strong></td>
+            <td><strong>Complete</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Payment Status</strong></td>
+            <td><strong>
+              <div id="paymentStatus"><%= @paymentStatus %></div>
+            </strong></td>
+          </tr>
+          <tr>
+            <td><strong>Payment ID</strong></td>
+            <td><strong>
+              <div id="paymentId"><%= @paymentId %></div>
+            </strong></td>
+          </tr>
+          <tr>
+            <td><strong>Payment URL</strong></td>
+            <td><strong>
+              <div id="paymentUrl"><%= @paymentUrl %></div>
+            </strong></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+post '/finish_order' do
+  token = params[:token]
+  amount_cents = 1150
+
+  uri = URI.parse(Apruve::ApruveClient::APRUVE_PAYMENTS_URL % token)
+  http = Net::HTTP.new(uri.host,uri.port)
+  #http.use_ssl = true
+  req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' =>'application/json'})
+  req['Apruve-Api-Key'] = "f8ecae057491ddfbd900bf5fa3d60271"
+  req.body = "{\"amount_cents\":#{amount_cents}}"
+  res = http.request(req)
+  puts "Response #{res.code} #{res.message}: #{res.body}"
+  result_data = JSON.parse(res.body)
+
+  case res
+    when Net::HTTPSuccess
+      @paymentStatus = result_data['status']
+      @paymentId = result_data['id']
+      @paymentUrl = result_data['view_url']
+      erb :finished
+    else
+      res.value
+  end
+end
+
+
+post '/webhook_notify' do
+  request.body.rewind
+  @webhook_data = JSON.parse request.body.read
+  puts "GOT WEBHOOK DATA FOR PAYMENT #{@webhook_data['payment_id']} : #{@webhook_data['status']}"
+end
+
+
