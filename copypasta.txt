@@ -83,7 +83,7 @@ end
             <td>
               <p><img src="img/credit-card-logos-sm.png"/></p>
 
-              <p><input id="apruveBtn" type="submit" value="" class="apruveBtn" style="width: 67px;height: 21px;"/></p>
+              <p></p>
             </td>
           </tr>
         </table>
@@ -93,7 +93,7 @@ end
 </div>
 
 
-<script src="test.apruve.com/js/apruve.js" type="text/javascript"></script>
+<script src="https://www.apruve.com/js/apruve.js" type="text/javascript"></script>
 
 
 
@@ -112,7 +112,7 @@ end
 
 
 
-<div id="apruveBtn" type="submit" value="" class="apruveBtn" style="width: 67px;height: 21px;"/>
+<input id="apruveBtn" type="submit" value="" class="apruveBtn" style="width: 67px;height: 21px;"/>
 
 
 <div id="thankYou">
