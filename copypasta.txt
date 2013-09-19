@@ -26,6 +26,33 @@ end
 <div id="apruveDiv"/>
 
 
+post '/finish_order' do
+  token = params[:token]
+  amount_cents = 1150
+
+  uri = URI.parse(Apruve::ApruveClient::APRUVE_PAYMENTS_URL % token)
+  http = Net::HTTP.new(uri.host,uri.port)
+  http.use_ssl = true
+  req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' =>'application/json'})
+  req['Apruve-Api-Key'] = ''
+  req.body = "{\"amount_cents\":#{amount_cents}}"
+  res = http.request(req)
+  puts "Response #{res.code} #{res.message}: #{res.body}"
+  result_data = JSON.parse(res.body)
+
+  case res
+    when Net::HTTPSuccess
+      @paymentStatus = result_data['status']
+      @paymentId = result_data['id']
+      @paymentUrl = result_data['view_url']
+      erb :finished
+    else
+      res.value
+  end
+end
+
+
+
 <div id="thankYou">
   <div class="row">
     <div class="span8 offset2">
@@ -79,31 +106,6 @@ end
   </div>
 </div>
 
-
-post '/finish_order' do
-  token = params[:token]
-  amount_cents = 1150
-
-  uri = URI.parse(Apruve::ApruveClient::APRUVE_PAYMENTS_URL % token)
-  http = Net::HTTP.new(uri.host,uri.port)
-  http.use_ssl = true
-  req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' =>'application/json'})
-  req['Apruve-Api-Key'] = ''
-  req.body = "{\"amount_cents\":#{amount_cents}}"
-  res = http.request(req)
-  puts "Response #{res.code} #{res.message}: #{res.body}"
-  result_data = JSON.parse(res.body)
-
-  case res
-    when Net::HTTPSuccess
-      @paymentStatus = result_data['status']
-      @paymentId = result_data['id']
-      @paymentUrl = result_data['view_url']
-      erb :finished
-    else
-      res.value
-  end
-end
 
 
 post '/webhook_notify' do
