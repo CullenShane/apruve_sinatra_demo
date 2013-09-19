@@ -93,7 +93,7 @@ end
 </div>
 
 
-<script src="https://www.apruve.com/js/apruve.js" type="text/javascript"></script>
+<script src="https://test.apruve.com/js/apruve.js" type="text/javascript"></script>
 
 
 
@@ -175,7 +175,7 @@ post '/finish_order' do
 
   uri = URI.parse(Apruve::ApruveClient::APRUVE_PAYMENTS_URL % token)
   http = Net::HTTP.new(uri.host,uri.port)
-  #http.use_ssl = true
+  http.use_ssl = true
   req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' =>'application/json'})
   req['Apruve-Api-Key'] = "f8ecae057491ddfbd900bf5fa3d60271"
   req.body = "{\"amount_cents\":#{amount_cents}}"

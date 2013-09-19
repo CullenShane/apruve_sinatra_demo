@@ -1,6 +1,6 @@
 module Apruve
   class ApruveClient
-    APRUVE_URL = "http://localhost:3000"
+    APRUVE_URL = "https://test.apruve.com"
     APRUVE_PAYMENTS_URL = APRUVE_URL + "/api/v3/payment_requests/%s/payments"
     APRUVE_JS_URL = APRUVE_URL + '/js/apruve.js'
 
