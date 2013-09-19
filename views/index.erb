@@ -1,0 +1,84 @@
+
+<div id="thankYou" style="display:none">
+  <div class="row">
+    <div class="span6 offset3">
+      <div class="well-large" style="text-align: center">
+        <h1>Your order is ready to place. Click to complete.</h1>
+
+        <table class="table">
+          <tr>
+            <td><strong>Order</strong></td>
+            <td><strong>Ready To Place</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Payment Request Status</strong></td>
+            <td><strong>
+              <div id="paymentRequestStatus"></div>
+            </strong></td>
+          </tr>
+          <tr>
+            <td><strong>Token</strong></td>
+            <td><strong>
+              <div id="paymentRequestToken"></div>
+            </strong></td>
+          </tr>
+        </table>
+        <form action="/finish_order" method="POST">
+          <input id="tokenField" type="hidden" name="token" value="">
+          <input type="submit" value="Submit">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="shoppingCart">
+  <div class="row">
+    <div class="span12">
+      <div class="well-large">
+        <table class="table">
+          <thead>
+          <tr>
+            <td>Title</td>
+            <td>Description</td>
+            <td>SKU</td>
+            <td>Price</td>
+          </tr>
+          </thead>
+          <tr>
+            <td>A Widget</td>
+            <td>Description for a widget</td>
+            <td>SKU-ABCD</td>
+            <td>$10.00</td>
+          </tr>
+          <tr>
+            <td>Another Widget</td>
+            <td>Description for another widget</td>
+            <td>SKU-EFGH</td>
+            <td>$1.50</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span5 offset7">
+      <div class="well-large">
+
+        <table class="table">
+          <tr>
+            <td><strong>Total</strong></td>
+            <td><strong>$11.50</strong></td>
+          </tr>
+          <tr>
+            <td>
+              <p><strong>Click to pay</strong></p>
+            </td>
+            <td>
+              <p><img src="img/credit-card-logos-sm.png"/></p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
