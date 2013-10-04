@@ -1,6 +1,7 @@
 module Apruve
   class ApruveClient
     APRUVE_URL = "https://test.apruve.com"
+    #APRUVE_URL = "http://localhost:3000"
     APRUVE_PAYMENTS_URL = APRUVE_URL + "/api/v3/payment_requests/%s/payments"
     APRUVE_JS_URL = APRUVE_URL + '/js/apruve.js'
 
@@ -43,7 +44,7 @@ module Apruve
 
   class PaymentRequest < Apruve::ApruveObject
     require 'digest'
-    attr_accessor :merchant_id, :amount, :currency, :line_items, :api_key
+    attr_accessor :merchant_id, :amount_cents, :currency, :line_items, :api_key
 
     def initialize(args = {})
       super args
@@ -73,19 +74,19 @@ module Apruve
     end
 
     def validate
-      if merchant_id.nil? || amount.nil? || currency.nil? || line_items.size < 1
-        raise "PaymentRequest must specify merchant_id, amount, currency, and at least one line item."
+      if merchant_id.nil? || amount_cents.nil? || currency.nil? || line_items.size < 1
+        raise "PaymentRequest must specify merchant_id, amount_cents, currency, and at least one line item."
       end
       line_items.each { |line_item| line_item.validate }
     end
   end
 
   class LineItem < Apruve::ApruveObject
-    attr_accessor :title, :price_total, :quantity, :description, :sku
+    attr_accessor :title, :amount_cents, :quantity, :description, :sku
 
     def validate
-      if title.nil? || price_total.nil?
-        raise "Line items must specifiy title and price_total."
+      if title.nil? || amount_cents.nil?
+        raise "Line items must specifiy title and amount_cents."
       end
     end
 

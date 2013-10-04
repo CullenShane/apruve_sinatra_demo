@@ -1,5 +1,5 @@
 get '/' do
-  @payment_request = Apruve::PaymentRequest.new api_key: api_key, merchant_id: merchant_id, amount: 1150, currency: 'USD'
+  @payment_request = Apruve::PaymentRequest.new api_key: api_key, merchant_id: merchant_id, amount_cents: 1150, currency: 'USD'
   @payment_request.line_items << Apruve::LineItem.new(description: 'Description "for" a widget', title: 'A Widget', sku: "SKU-ABCD", price_total: 1000, quantity: 1)
   @payment_request.line_items << Apruve::LineItem.new(title: 'Another Widget', description: 'Description for another widget', sku: "SKU-EFGH", price_total: 150, quantity: 1)
 
