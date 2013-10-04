@@ -1,7 +1,7 @@
 get '/' do
   @payment_request = Apruve::PaymentRequest.new api_key: api_key, merchant_id: merchant_id, amount_cents: 1150, currency: 'USD'
-  @payment_request.line_items << Apruve::LineItem.new(description: 'Description "for" a widget', title: 'A Widget', sku: "SKU-ABCD", price_total: 1000, quantity: 1)
-  @payment_request.line_items << Apruve::LineItem.new(title: 'Another Widget', description: 'Description for another widget', sku: "SKU-EFGH", price_total: 150, quantity: 1)
+  @payment_request.line_items << Apruve::LineItem.new(description: 'Description "for" a widget', title: 'A Widget', sku: "SKU-ABCD", amouht_cents: 1000, quantity: 1)
+  @payment_request.line_items << Apruve::LineItem.new(title: 'Another Widget', description: 'Description for another widget', sku: "SKU-EFGH", amount_cents: 150, quantity: 1)
 
   erb :index
 end
@@ -14,8 +14,8 @@ end
     apruve.paymentRequest = <%= @payment_request.to_json %>;
     apruve.registerApruveCallback(apruve.APRUVE_COMPLETE_EVENT, function () {
         $('#paymentRequestStatus').html(apruve.status)
-        $('#paymentRequestToken').html(apruve.paymentRequestToken)
-        $('#tokenField').val(apruve.paymentRequestToken)
+        $('#paymentRequestToken').html(apruve.paymentRequestId)
+        $('#tokenField').val(apruve.paymentRequestId)
         $('#shoppingCart').hide()
         $('#thankYou').show()
     });
@@ -43,7 +43,7 @@ post '/finish_order' do
   case res
     when Net::HTTPSuccess
       @paymentStatus = result_data['status']
-      @paymentId = result_data['id']
+      @paymentId = result_data['token']
       @paymentUrl = result_data['view_url']
       erb :finished
     else
