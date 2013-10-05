@@ -1,6 +1,6 @@
 get '/' do
   @payment_request = Apruve::PaymentRequest.new api_key: api_key, merchant_id: merchant_id, amount_cents: 1150, currency: 'USD'
-  @payment_request.line_items << Apruve::LineItem.new(description: 'Description "for" a widget', title: 'A Widget', sku: "SKU-ABCD", amouht_cents: 1000, quantity: 1)
+  @payment_request.line_items << Apruve::LineItem.new(description: 'Description "for" a widget', title: 'A Widget', sku: "SKU-ABCD", amount_cents: 1000, quantity: 1)
   @payment_request.line_items << Apruve::LineItem.new(title: 'Another Widget', description: 'Description for another widget', sku: "SKU-EFGH", amount_cents: 150, quantity: 1)
 
   erb :index
