@@ -43,7 +43,7 @@ post '/finish_order' do
   case res
     when Net::HTTPSuccess
       @paymentStatus = result_data['status']
-      @paymentId = result_data['token']
+      @paymentId = result_data['id']
       @paymentUrl = result_data['view_url']
       erb :finished
     else
