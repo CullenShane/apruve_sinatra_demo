@@ -9,7 +9,7 @@ end
 
 <script src="https://test.apruve.com/js/apruve.js" type="text/javascript"></script>
 <script type="text/javascript">
-    apruve.logoSrc = '/img/generic-logo.png';
+    apruve.logoSrc = 'http://localhost:4567/img/generic-logo.png';
     apruve.secureHash = '<%= @payment_request.token %>';
     apruve.paymentRequest = <%= @payment_request.to_json %>;
     apruve.registerApruveCallback(apruve.APRUVE_COMPLETE_EVENT, function () {
